@@ -1,18 +1,24 @@
-class Solution {
- public:
-  vector<vector<string>> groupAnagrams(vector<string>& strs) {
-    vector<vector<string>> ans;
-    unordered_map<string, vector<string>> keyToAnagrams;
 
-    for (const string& str : strs) {
-      string key = str;
-      ranges::sort(key);
-      keyToAnagrams[key].push_back(str);
+public:
+    set<Node*> ans;
+    void find(Node* root, int level, vector<Node*> v, int k){
+        if(!root) return;
+        
+        v.push_back(root);
+        if(!root->left and !root->right){
+            int dist = level - k;
+            if(dist >= 0)
+                ans.insert(v[dist]);
+            return;
+        }
+        
+        find(root->left, level+1, v, k);
+        find(root->right, level+1, v, k);
     }
-
-    for (const auto& [_, anagrams] : keyToAnagrams)
-      ans.push_back(anagrams);
-
-    return ans;
-  }
-};
+    
+    int printKDistantfromLeaf(Node* root, int k)
+    {
+         vector<Node*> v;
+         find(root, 0, v, k);
+         return ans.size();
+    }
